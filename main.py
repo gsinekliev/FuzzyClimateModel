@@ -7,6 +7,7 @@ from clusterizations import FuzzyCMeans
 NUM_CLUSTERS      = 5
 RANDOM_INTS_RANGE = 1000
 
+#mindless comment
 def get_input_data( filename ):
     return inp.InputDataUtilities.getNumpyArrayListFromFile( os.getcwd() + '\\Data\\' + filename )
 
