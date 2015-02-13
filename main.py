@@ -3,6 +3,7 @@ import random
 
 import input as inp
 from clusterizations import FuzzyCMeans
+from davies_bouldin import DavisBouldin
 
 NUM_CLUSTERS      = 5
 RANDOM_INTS_RANGE = 1000
@@ -74,25 +75,30 @@ def main():
     print clusterizer.membership_degrees;
     print len( membership_degrees )
 
-    cities_dict = {}
-    for i in xrange( 0, len( clusterizer.membership_degrees ) ):
-        maximalMembership = max(clusterizer.membership_degrees[ i ] )
-        clusterIndex = [ k for k,j in enumerate(clusterizer.membership_degrees[ i ] ) if j == maximalMembership ][0]
-        cities_dict[ inp.cities_names[ i ] ] = clusterIndex;
+    # cities_dict = {}
+    # for i in xrange( 0, len( clusterizer.membership_degrees ) ):
+    #     maximalMembership = max(clusterizer.membership_degrees[ i ] )
+    #     clusterIndex = [ k for k,j in enumerate(clusterizer.membership_degrees[ i ] ) if j == maximalMembership ][0]
+    #     cities_dict[ inp.cities_names[ i ] ] = clusterIndex;
+    #
+    # print cities_dict
+    #
+    # from collections import defaultdict
+    #
+    # clusters_dict = defaultdict(list)
+    # for city_name, cluster_index in cities_dict.iteritems():
+    #     print city_name + "-->" + str(cluster_index)
+    #     clusters_dict[ cluster_index ].append( city_name )
+    #
+    # for key,value in clusters_dict.iteritems():
+    #     print "Cluster " + str( key )
+    #     print '\n'.join( value )
+    #     print "________________"
 
-    print cities_dict
+    bouldin_index = DavisBouldin.from_fuzzy_data( training_data, clusterizer.membership_degrees, clusterizer.centers )
+    print "Bouldin index"
+    print bouldin_index.calculate()
 
-    from collections import defaultdict
-
-    clusters_dict = defaultdict(list)
-    for city_name, cluster_index in cities_dict.iteritems():
-        print city_name + "-->" + str(cluster_index)
-        clusters_dict[ cluster_index ].append( city_name )
-
-    for key,value in clusters_dict.iteritems():
-        print "Cluster " + str( key );
-        print '\n'.join( value )
-        print "________________"
 
     #cities_dict = { inp.cities_names[ index ] : membership_degree[ index ] for index in xrange( len( clusterizer.membership_degrees) ) }
 
