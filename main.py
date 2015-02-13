@@ -7,7 +7,6 @@ from clusterizations import FuzzyCMeans
 NUM_CLUSTERS      = 5
 RANDOM_INTS_RANGE = 1000
 
-#mindless comment
 def get_input_data( filename ):
     return inp.InputDataUtilities.getNumpyArrayListFromFile( os.getcwd() + '\\Data\\' + filename )
 
@@ -32,8 +31,11 @@ def main():
     # filename = 'data_temp_2012_2013.npy'
     filename = 'data_january_2012_2013.npy'
     training_data = [ t.flatten() for t in get_input_data( filename ) ]
+
+    print training_data
+    print "_______________________"
     training_data = normalize_training_data( training_data )
-    # print training_data
+    print training_data
 
     membership_degrees = generate_random_membership_vectors( len( training_data ), NUM_CLUSTERS )
     # print membership_degrees
@@ -66,11 +68,40 @@ def main():
         for ind in xrange( 1, NUM_CLUSTERS ):
             if membership_degree[ ind ] > membership_degree[ max_ind ]:
                 max_ind = ind
-
+        # cities_dict[   ]
         count[ max_ind ] += 1
 
-    print count
-    print clusterizer.iterations
+    print clusterizer.membership_degrees;
+    print len( membership_degrees )
+
+    cities_dict = {}
+    for i in xrange( 0, len( clusterizer.membership_degrees ) ):
+        maximalMembership = max(clusterizer.membership_degrees[ i ] )
+        clusterIndex = [ k for k,j in enumerate(clusterizer.membership_degrees[ i ] ) if j == maximalMembership ][0]
+        cities_dict[ inp.cities_names[ i ] ] = clusterIndex;
+
+    print cities_dict
+
+    from collections import defaultdict
+
+    clusters_dict = defaultdict(list)
+    for city_name, cluster_index in cities_dict.iteritems():
+        print city_name + "-->" + str(cluster_index)
+        clusters_dict[ cluster_index ].append( city_name )
+
+    for key,value in clusters_dict.iteritems():
+        print "Cluster " + str( key );
+        print '\n'.join( value )
+        print "________________"
+
+    #cities_dict = { inp.cities_names[ index ] : membership_degree[ index ] for index in xrange( len( clusterizer.membership_degrees) ) }
+
+    #print cities_dict
+
+    #print count
+
+
+    #print clusterizer.iterations
 
     # named_training_data = zip( inp.perc_cities, training_data)
     # print named_training_data
