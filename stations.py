@@ -108,7 +108,7 @@ STATIONS_INFORMATION = [
     # StationInformation( "Lebanon", "Beyrouth Aeroport ", 40100 )     # | 33-49N | 035-29E | 29 m
     # StationInformation( "Macau", "Macau" )
     # StationInformation( "Malaysia", "Kota Bharu", 48615 )            # | 06-10N | 102-17E | 5 m
-    # StationInformation( "Maldives", "Malé" )
+    # StationInformation( "Maldives", "Male" )
     # StationInformation( "Mongolia", "Hujirt", 44285 )                # | 46-54N | 102-46E | 1662 m
     # StationInformation( "Myanmar", "Myitkyina", 48008 )              # | 25-22N | 097-24E | 145 m
 
