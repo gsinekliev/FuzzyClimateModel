@@ -2,7 +2,7 @@ __author__ = 'Admin'
 
 from math import sqrt
 from itertools import combinations
-
+from utils import euclidean_distance
 '''
 Clusters should be list of clusters ( arrrays of vectors )}
 Davis-bouldin index works with strict clustering so each element should be in one cluster
@@ -33,8 +33,11 @@ class DavisBouldin(object):
 
     def calculate(self):
         print "________________ENTER CALCULATE___________________"
-        return max( [self.calculate_cluster_index(first, second)
+        result =  max( [self.calculate_cluster_index(first, second)
                       for (first, second) in combinations(zip(self.clusters, self.centers), 2 )])
+        print "___________________DONE________________"
+        print result
+
     '''
     each argument is in the form ( vectors, center )
     '''
@@ -46,16 +49,3 @@ class DavisBouldin(object):
     def calculate_scatter( self, cluster, center ):
         summed_distances = sum( [ euclidean_distance( individual, center ) for individual in cluster ] )
         return ( summed_distances+0. ) / len( cluster )
-
-def euclidean_distance( first, second ):
-    sum = 0
-    for i,j in zip( first, second ):
-        sum += abs( i - j )**2
-    return sqrt( sum )
-
-if __name__ == "__main__":
-    print "Euclidean distance between"
-    print "(0,0) and (1 1)"
-    print euclidean_distance([0,0],[1,1] )
-    print "(1,2) and (1,2 )"
-    print euclidean_distance((1,2),(1,2) )

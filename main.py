@@ -3,7 +3,9 @@ import random
 
 import input as inp
 from clusterizations import FuzzyCMeans
-from davies_bouldin import DavisBouldin
+from clusterization_indices.davies_bouldin import DavisBouldin
+from clusterization_indices.xie_beni2 import XieBenniIndex
+
 
 NUM_CLUSTERS      = 5
 RANDOM_INTS_RANGE = 1000
@@ -72,7 +74,7 @@ def main():
         # cities_dict[   ]
         count[ max_ind ] += 1
 
-    print clusterizer.membership_degrees;
+    print clusterizer.membership_degrees
     print len( membership_degrees )
 
     # cities_dict = {}
@@ -96,8 +98,11 @@ def main():
     #     print "________________"
 
     bouldin_index = DavisBouldin.from_fuzzy_data( training_data, clusterizer.membership_degrees, clusterizer.centers )
-    print "Bouldin index"
-    print bouldin_index.calculate()
+    print "Bouldin index" + str( bouldin_index.calculate() )
+
+    xie_beni = XieBenniIndex()
+    print "Xie Beni index" + \
+          str(xie_beni.calculate( training_data, clusterizer.membership_degrees, clusterizer.centers ))
 
 
     #cities_dict = { inp.cities_names[ index ] : membership_degree[ index ] for index in xrange( len( clusterizer.membership_degrees) ) }
