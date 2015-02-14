@@ -13,20 +13,13 @@ class FuzzyCMeans( object ):
         self.__centers             = self.compute_centers()
         self.__iterations          = 0
 
-
     def __get_membership_degrees( self ):
         return self.__membership_degrees
     membership_degrees = property( __get_membership_degrees, None )
-    """
-
-    """
 
     def __get_training_set(self):
         return self.__training_set
     x = property( __get_training_set, None )
-    """
-
-    """
 
     def __get_centers( self ):
         return self.__centers
@@ -45,9 +38,6 @@ class FuzzyCMeans( object ):
     """
 
     def compute_centers(self):
-        """
-
-        """
         mm = self.__membership_degrees ** self.fuzzyness_coefficient
         c = dot(self.__training_set.transpose(), mm) / numpy_sum(mm, axis=0)
         self.__centers = c.transpose()
