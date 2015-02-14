@@ -97,8 +97,9 @@ def main():
     #     print '\n'.join( value )
     #     print "________________"
 
-    bouldin_index = DavisBouldin.from_fuzzy_data( training_data, clusterizer.membership_degrees, clusterizer.centers )
-    print "Bouldin index" + str( bouldin_index.calculate() )
+    d_bouldinCalculator = DavisBouldin()
+    print "Bouldin index" + str( d_bouldinCalculator.calculate_from_fuzzy_data(training_data, clusterizer.membership_degrees,
+                                                           clusterizer.centers) )
 
     xie_beni = XieBenniIndex()
     print "Xie Beni index" + \

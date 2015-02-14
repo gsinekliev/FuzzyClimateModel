@@ -7,6 +7,8 @@ from itertools import combinations
 This index measures the within-group variance of distances between individual and cluster center
 Also takes into account the squared distance between cluster centers
 http://homes.di.unimi.it/~valenti/SlideCorsi/Bioinformatica05/Fuzzy-Clustering-lecture-Babuska.pdf
+
+NOTE: fuzzynes_parameter should be the same as is fuzzy c-means
 '''
 class XieBenniIndex:
     def __init__(self, fuzzyness_parameter = 2, xie_beni_constant = 1):

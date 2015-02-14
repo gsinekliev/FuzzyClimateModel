@@ -9,15 +9,13 @@ Davis-bouldin index works with strict clustering so each element should be in on
 '''
 
 class DavisBouldin(object):
-    def __init__(self, clusters, centers):
-        self.clusters = clusters
-        self.centers = centers
+    def __init__(self):
+        pass
 
     '''
     fuzzy_membership should be ELEMENTSxCLUSTERS matrix
     '''
-    @classmethod
-    def from_fuzzy_data( cls, individuals, fuzzy_membership, centers ):
+    def calculate_from_fuzzy_data( self, individuals, fuzzy_membership, centers ):
         clusters = [[] for i in range (len(fuzzy_membership[0]))] # initialize empty clusters
         for i in range(len(individuals)):
             print "____________________"
@@ -29,14 +27,12 @@ class DavisBouldin(object):
             print "Max cluster index is " + str(max_cluster)
             clusters[ max_cluster ].append( individuals[i] )
 
-        return cls( clusters, centers )
+        return self.calculate( clusters, centers )
 
-    def calculate(self):
-        print "________________ENTER CALCULATE___________________"
+    def calculate(self, clusters, centers ):
         result =  max( [self.calculate_cluster_index(first, second)
-                      for (first, second) in combinations(zip(self.clusters, self.centers), 2 )])
-        print "___________________DONE________________"
-        print result
+                      for (first, second) in combinations(zip(clusters, centers), 2 )])
+        return result
 
     '''
     each argument is in the form ( vectors, center )
