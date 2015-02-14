@@ -77,42 +77,48 @@ STATIONS_INFORMATION = [
     #       from this endpoint http://www.ogimet.com/synopsc.phtml.en
     # StationInformation( "Abkhazia", "Sukhumi" )
     # StationInformation( "Afghanistan", "Kabul" )
-    # StationInformation( "Armenia", "Yerevan" )
-    # StationInformation( "Azerbaijan", "Baku" )
-    # StationInformation( "Bahrain", "Manama" )
-    # StationInformation( "Bangladesh", "Dhaka" )
-    # StationInformation( "Bhutan", "Thimphu" )
-    # StationInformation( "Brunei", "Bandar Seri Begawan" )
+    # StationInformation( "Armenia", "Kapan ", 37959 )                 # | 39-12N | 046-26E | 704 m
+    # StationInformation( "Azerbaijan", "Lankaran", 37985)             # | 38-44N | 048-50E | -13 m
+
+    #no precipitation
+    ## StationInformation( "Bahrain", "Bahrein Airport", 41150 )       # | 26-16N | 050-39E | 2 m
+    ## StationInformation( "Bangladesh", "Saidpur", 41858 )            # | 25-45N | 088-55E | 39 m
+
+    # StationInformation( "Brunei", "Brunei Airport", 96315 )          # | 04-56N | 114-56E | 22 m
     # StationInformation( "Cambodia", "Phnom Penh" )
-    # StationInformation( "China", "Beijing" )
-    # StationInformation( "Cyprus", "Nicosia" )
+    # StationInformation( "China", "Hulin ", 50983 )                   # | 45-46N | 132-58E | 103 m
+
+    # not verified
+    # StationInformation( "Cyprus", "Nicosia", 17521 )                 # | 35-08N | 033-31E | 110 m
     # StationInformation( "East Timor", "Dili" )
-    # StationInformation( "Egypt", "Cairo" )
-    # StationInformation( "Georgia", "Tbilisi" )
-    # StationInformation( "Hong Kong", "Hong Kong" )
-    # StationInformation( "India", "New Delhi" )
-    # StationInformation( "Indonesia", "Jakarta" )
-    # StationInformation( "Iran", "Tehran" )
-    # StationInformation( "Iraq", "Baghdad" )
-    # StationInformation( "Israel", "Jerusalem" )
-    # StationInformation( "Japan", "Tokyo" )
-    # StationInformation( "Jordan", "Amman" )
-    # StationInformation( "Kazakhstan", "Astana" )
-    # StationInformation( "Kuwait", "Kuwait City" )
-    # StationInformation( "Kyrgyzstan", "Bishkek" )
-    # StationInformation( "Laos", "Vientiane" )
-    # StationInformation( "Lebanon", "Beirut" )
+    # StationInformation( "Egypt", "Cairo", 62366 )                    # | 30-08N | 031-24E | 64 m
+    # StationInformation( "Georgia", "Tbilisi", 37545 )                # | 41-42N | 044-45E | 403 m
+    # StationInformation( "Hong Kong", "Hong Kong Airport", 45007  )   # | 22-20N | 114-11E | 5 m
+    # StationInformation( "India", "New Delhi", 42182 )                # | 28-35N | 077-12E | 211 m
+    # StationInformation( "Indonesia", "Jakarta", 96741  )             # | 06-06S | 106-52E | 2 m
+    # StationInformation( "Iran", "Tehran-Mehrabad", 40754 )           # | 35-41N | 051-21E | 1204 m
+    # StationInformation( "Iraq", "Baghdad", 40650 )                   # | 33-14N | 044-14E | 34 m
+    # StationInformation( "Israel", "Jerusalem", 40183 )               # | 31-46N | 035-13E | 815 m
+    # StationInformation( "Japan", "Tokyo", 47662 )                    # | 35-41N | 139-46E | 5 m
+    # StationInformation( "Jordan", "Amman Airport", 40270 )           # | 31-59N | 035-59E | 767 m
+    # StationInformation( "Kazakhstan", "Irtyshsk", 29807 )            # | 53-21N | 075-27E | 94 m
+    # StationInformation( "Kuwait", "Kuwait City", 40582 )             # | 29-13N | 047-59E | 55 m
+    # StationInformation( "Kyrgyzstan", "Bishkek", 38353 )             # | 42-51N | 074-32E | 756 m
+    # StationInformation( "Laos", "Vientiane", 48940 )                 # | 17-57N | 102-34E | 171 m
+    # StationInformation( "Lebanon", "Beyrouth Aeroport ", 40100 )     # | 33-49N | 035-29E | 29 m
     # StationInformation( "Macau", "Macau" )
-    # StationInformation( "Malaysia", "Kuala Lumpur" )
-    # StationInformation( "Maldives", "Male" )
-    # StationInformation( "Mongolia", "Ulan Bator" )
-    # StationInformation( "Myanmar", "Naypyidaw" )
+    # StationInformation( "Malaysia", "Kota Bharu", 48615 )            # | 06-10N | 102-17E | 5 m
+    # StationInformation( "Maldives", "Malé" )
+    # StationInformation( "Mongolia", "Hujirt", 44285 )                # | 46-54N | 102-46E | 1662 m
+    # StationInformation( "Myanmar", "Myitkyina", 48008 )              # | 25-22N | 097-24E | 145 m
+
+    #verified:
     # StationInformation( "Nagorno-Karabakh", "Stepanakert" )
     # StationInformation( "Nepal", "Kathmandu" )
     # StationInformation( "North Korea", "Pyongyang" )
     # StationInformation( "Northern Cyprus", "North Nicosia" )
     # StationInformation( "Oman", "Muscat" )
-    # StationInformation( "Pakistan", "Islamabad" )
+    # StationInformation( "Pakistan", "Islamabad", 41571 )                    # | 33-37N | 073-06E | 507 m
     # StationInformation( "Palestine", "E. Jerusalem" )
     # StationInformation( "Papua New Guinea", "Port Moresby" )
     # StationInformation( "Philippines", "Manila" )

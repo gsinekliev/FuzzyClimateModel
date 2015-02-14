@@ -25,7 +25,7 @@ class InputDataUtilities(object):
 
 
 """ There is percepitation info for these cities after July 2012"""
-perc_cities = ['Aalborg', 'Alicante', 'Amsterdam', 'Ankara', 'Antalya', 'Arad', 'Atlanta', 'Baltimore',
+cities_names = ['Aalborg', 'Alicante', 'Amsterdam', 'Ankara', 'Antalya', 'Arad', 'Atlanta', 'Baltimore',
                'Barcelona', 'Basel', 'Beijing', 'Beirut', 'Belfast', 'Belgrade', 'Bergen', 'Berlin', 'Bogota', 'Boston',
                'Brasilia', 'Bremen', 'Brisbane', 'Bristol', 'Brno', 'Brussels', 'Bucharest', 'Burgas', 'Cairo', 'Charlotte',
                'Chicago', 'Copenhagen', 'Corfu', 'Craiova', 'Dalian', 'Dallas', 'Debrecen', 'Denver',
