@@ -7,6 +7,8 @@ from clusterization_indices.davies_bouldin import DavisBouldin
 from clusterization_indices.xie_beni2 import XieBenniIndex
 from rules.rule import RuleGenerator, CompositionRule
 from collectors import get_synops
+
+from visualization.visualize_clusters import ClusterVisualizer
 import stations
 from synop_parser import Normalizer
 
@@ -158,13 +160,16 @@ def indexize_cluster( clusterizer, ordered_synop_vectors ):
         indexed_clusters[ cluster_index ][ 'data' ].append( Normalizer.get_unnormalized_vector( ordered_synop_vectors[ ind ] ) )
         indexed_clusters[ cluster_index ][ 'membership_degrees' ].append( clusterizer.membership_degrees[ ind ] )
 
-    return indexed_clusters
+    return indexed_clusters    
+
+    # for membership_degree in clusterizer.membership_degrees[ :10 ]:
+    # for ind in xrange( 10 ):
 
 if __name__ == '__main__':
     # main()
     station_indices = [ st_info.wmoind for st_info in stations.STATIONS_INFORMATION ]
     month  = '01'
-    synops = get_synops( station_indices, month )
+    synops = get_synops(station_indices, month)
     print '___________GETTING_SYNOP_RESULTS___________'
     print synops
     ordered_synops                   = [ synops[ station_index ] for station_index in station_indices ]
@@ -182,6 +187,7 @@ if __name__ == '__main__':
         print "----------------------------------"
         print '\n'.join( map( str, indexed_cluster[ 'membership_degrees' ] ) )
 
+    ClusterVisualizer.visualize_clusters(ordered_synops, clusterizer.membership_degrees)
     # composer = CompositionRule()
     # [ composer.add_cluster_rule( RuleGenerator.generate_rule( indexed_cluster[ 'data' ], indexed_cluster[ 'membership_degrees' ] , cluster_index ) ) for cluster_index, indexed_cluster in indexed_clusters.items() ]
 
