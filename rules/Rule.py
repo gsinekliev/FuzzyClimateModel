@@ -1,4 +1,5 @@
 from rules.fuzzy_sets import FuzzyTriangle
+from synop_parser import Synop
 
 __author__ = 'Admin'
 
@@ -33,7 +34,11 @@ class RuleGenerator(object):
 
     def generate_rule(self, synop_objects, membership_matrix, cluster_index):
         rule = Rule()
-        # TODO: make rules by adding a fuzzy set for each attribute of synop_object and using cluster_index as consquent
-        #for synop, membership_vector in zip( synop_objects, membership_matrix ):
-        #    for attribute in synop.attributes_dict():
-        #        rule.add_antecedent( Antecedent( FuzzyTriangle.from_cluster_data(  ) ),  )
+
+        attributes_values = {key : [ getattr(synop, key) for synop in synop_objects ] for key in Synop().attributes()}
+        for label, values in attributes_values:
+            membership_vector = [ row[ cluster_index ] for row in membership_matrix ]
+            rule.add_antecedent(Antecedent(FuzzyTriangle.from_cluster_data( values, membership_vector, 0.25 )))
+
+        rule.add_consequent(cluster_index)
+        return rule

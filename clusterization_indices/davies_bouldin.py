@@ -34,12 +34,12 @@ class DavisBouldin(object):
                       for (first, second) in combinations(zip(clusters, centers), 2 )])
         return result
 
-    '''
-    each argument is in the form ( vectors, center )
-    '''
     def calculate_cluster_index(self, first, second):
+        '''
+        each argument is in the form ( vectors, center )
+        '''
         return ( self.calculate_scatter(first[0], first[1])
-                 + self.calculate_scatter(second[0], second[1]) )    \
+                 + self.calculate_scatter(second[0], second[1]) ) \
                / euclidean_distance(first[1], second[1])
 
     def calculate_scatter( self, cluster, center ):
