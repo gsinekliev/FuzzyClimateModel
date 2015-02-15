@@ -177,23 +177,23 @@ if __name__ == '__main__':
     for cluster_index, indexed_cluster in indexed_clusters.items():
         print "_________________________Cluster " + str( cluster_index )
         print '\n'.join( map( str, indexed_cluster[ 'data' ] ) )
-        print "----------------------------------"
-        print '\n'.join( map( str, indexed_cluster[ 'raw_data' ] ) )
+        # print "----------------------------------"
+        # print '\n'.join( map( str, indexed_cluster[ 'raw_data' ] ) )
         print "----------------------------------"
         print '\n'.join( map( str, indexed_cluster[ 'membership_degrees' ] ) )
 
-    # composer = CompositionRule()
-    # [ composer.add_cluster_rule( RuleGenerator.generate_rule( indexed_cluster[ 'data' ], indexed_cluster[ 'membership_degrees' ] , cluster_index ) ) for cluster_index, indexed_cluster in indexed_clusters.items() ]
+    composer = CompositionRule()
+    for cluster_index, indexed_cluster in indexed_clusters.items():
+        composer.add_cluster_rule( RuleGenerator.generate_rule( indexed_cluster[ 'data' ], indexed_cluster[ 'membership_degrees' ] , cluster_index ) )
 
-    # print "__________________COMPOSE_RULES__________________"
-    # test_set = [
-    #     [0.86459184855289717, 0.86459184855289706, -6.8972882242763092, -8.4451865337823087, 819.08921626534755, 46.515041452145894],
-    #     [0.83073482561936263, 0.83073482561936207, -5.1680926987081364, -7.9818719467737296, 806.28710363831283, 4.9844089537161755],
-    #     [1.3027254252650611, 1.3027254252650609, 16.605520897807686, 14.130342589804066, 184.7558816831563, 84.156062472123025],
-    #     [1.2673356682704242, 1.267335668270424, 15.492949551944349, 13.391625250360484, 180.35004195403161, 201.50637125499765],
-    #     [1.0283650843519898, 1.0283650843519898, 21.061664863442253, 11.199311973834263, 19.754561539729377, 85.148628984344839],
-    #     [1.0795398862271515, 1.0795398862271515, 17.906519497224451, 10.0222798614788, 17.506538488316988, 290.82804534959484],
-    # ]
+    print "__________________COMPOSE_RULES__________________"
+    test_set = []
+    for indexed_cluster in indexed_clusters.values():
+        for ind in xrange( len( indexed_cluster[ 'data' ] ) ):
+            test_set.append( ( indexed_cluster[ 'data' ][ ind ], indexed_cluster[ 'membership_degrees' ][ ind ] ) )
 
-    # for item in test_set:
-    #     print composer.conclusion_vector( item )
+    print test_set
+    for ind, item in enumerate( test_set ):
+        print '=======================TEST %s=======================' % ind
+        print composer.conclusion_vector( item[ 0 ] )
+        print item[ 1 ]

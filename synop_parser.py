@@ -76,13 +76,14 @@ class Synop( object ):
         return array( [ item / denom for item in unnormalized_vector ] )
 
     def vector( self ):
-        return [ getattr( self, attribute ).value for attribute in self.attributes() ]
+        return [ getattr( self, attribute ).value for attribute in Synop.attributes() ]
 
-    def attributes( self ):
+    @staticmethod
+    def attributes():
         return [ 'cloud_base_of_lowest_cloud_seen', 'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
 
     def attributes_dict(self):
-        return {attribute: getattr( self, attribute ).value for attribute in self.attributes()}
+        return {attribute: getattr( self, attribute ).value for attribute in Synop.attributes()}
 
     @staticmethod
     def aggregate( synops, full_list_synops ):

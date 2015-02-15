@@ -28,6 +28,7 @@ class Rule(object):
         self._then_part = cluster_index
 
     def rule_confidence_level(self, input_vector):
+        print [ antecedent.fuzzy_input.get_membership_degree( input_vector[ ind ] ) for ind, antecedent in enumerate( self._if_part ) ]
         return self._and_operation( [ antecedent.fuzzy_input.get_membership_degree( input_vector[ ind ] )
                                       for ind, antecedent in enumerate( self._if_part ) ] )
 
@@ -38,11 +39,10 @@ class RuleGenerator(object):
             for one cluster passing synop_objects, membership_matrix for them and cluster_index
         """
         rule = Rule()
-        
-        attributes_values = {key : [ getattr(synop, key) for synop in synop_objects ] for key in Synop().attributes()}
-        for label, values in attributes_values:
+        attributes_values = {key : [ synop[ ind ] for synop in synop_objects ] for ind, key in enumerate( Synop.attributes() )}
+        for label, values in attributes_values.items():
             membership_vector = [ row[ cluster_index ] for row in membership_matrix ]
-            rule.add_antecedent(Antecedent(FuzzyTriangle.from_cluster_data( values, membership_vector, 0.25 )))
+            rule.add_antecedent(Antecedent(FuzzyTriangle.from_cluster_data( values, membership_vector, 0.25 ), label))
 
         rule.add_consequent(cluster_index)
         return rule
@@ -55,4 +55,5 @@ class CompositionRule( object ):
         self.cluster_rules.append( rule )
 
     def conclusion_vector( self, input_vector ):
+        print input_vector
         return [ cluster_rule.rule_confidence_level( input_vector ) for cluster_rule in self.cluster_rules ]
