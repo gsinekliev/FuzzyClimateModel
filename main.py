@@ -7,6 +7,8 @@ from clusterization_indices.davies_bouldin import DavisBouldin
 from clusterization_indices.xie_beni2 import XieBenniIndex
 from rules.rule import RuleGenerator, CompositionRule
 from collectors import get_synops
+
+from visualization.visualize_clusters import ClusterVisualizer
 import stations
 from synop_parser import Normalizer
 
@@ -160,11 +162,12 @@ def indexize_cluster( clusterizer, ordered_synop_vectors ):
 
     return indexed_clusters
 
+
 if __name__ == '__main__':
     # main()
     station_indices = [ st_info.wmoind for st_info in stations.STATIONS_INFORMATION ]
     month  = '01'
-    synops = get_synops( station_indices, month )
+    synops = get_synops(station_indices, month)
     print '___________GETTING_SYNOP_RESULTS___________'
     print synops
     ordered_synops                   = [ synops[ station_index ] for station_index in station_indices ]
@@ -197,3 +200,5 @@ if __name__ == '__main__':
         print '=======================TEST %s=======================' % ind
         print composer.conclusion_vector( item[ 0 ] )
         print item[ 1 ]
+
+    ClusterVisualizer.visualize_clusters(ordered_synops, clusterizer.membership_degrees)

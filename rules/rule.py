@@ -18,9 +18,6 @@ class Rule(object):
         self._then_part = -1 # index if cluster
         self._and_operation = and_operation
 
-    '''
-    Antecedent is fuzzy set for
-    '''
     def add_antecedent(self, antecedent):
         self._if_part.append(antecedent)
 
@@ -44,16 +41,17 @@ class RuleGenerator(object):
             membership_vector = [ row[ cluster_index ] for row in membership_matrix ]
             rule.add_antecedent(Antecedent(FuzzyTriangle.from_cluster_data( values, membership_vector, 0.25 ), label))
 
+
         rule.add_consequent(cluster_index)
         return rule
 
 class CompositionRule( object ):
-    def __init__( self, cluster_rules=[] ):
+    def __init__(self, cluster_rules=[]):
         self.cluster_rules = cluster_rules
 
-    def add_cluster_rule( self, rule ):
-        self.cluster_rules.append( rule )
+    def add_cluster_rule(self, rule):
+        self.cluster_rules.append(rule)
 
     def conclusion_vector( self, input_vector ):
         print input_vector
-        return [ cluster_rule.rule_confidence_level( input_vector ) for cluster_rule in self.cluster_rules ]
+        return [cluster_rule.rule_confidence_level( input_vector ) for cluster_rule in self.cluster_rules]
