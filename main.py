@@ -5,7 +5,8 @@ import input as inp
 from clusterizations import FuzzyCMeans
 from clusterization_indices.davies_bouldin import DavisBouldin
 from clusterization_indices.xie_beni2 import XieBenniIndex
-
+from collectors import get_synops
+import stations
 
 NUM_CLUSTERS      = 5
 RANDOM_INTS_RANGE = 1000
@@ -118,5 +119,26 @@ def main():
     # named_training_data = zip( inp.perc_cities, training_data)
     # print named_training_data
 
+
+def clusterize_stations( station_indices, month, year=2015 ):
+    synops              = get_synops( station_indices, month, year )
+    print '___________GETTING_SYNOP_RESULTS___________'
+    print synops
+    training_data       = [ synops[ station_index ].normalized_vector() for station_index in station_indices ]
+    print '_______________TRAINING_DATA_______________'
+    print training_data
+    membership_degrees  = generate_random_membership_vectors( len( training_data ), NUM_CLUSTERS )
+    print '____________MEMBERSHIP_DEGREES_____________'
+    print membership_degrees
+    clusterizer         = FuzzyCMeans( training_data, membership_degrees )
+    clusterizer()
+    print " Cluster 1 | Cluster 2 | Cluster 3 | Cluster 4 | Cluster 5 "
+    for ind, station in enumerate( stations.STATIONS_INFORMATION ):
+        print " " + " | ".join( map( lambda x: "%8.7f" % x, clusterizer.membership_degrees[ ind ] ) ) + " -> " + "%25s" % station.country + " " + "%25s" % station.city + " " + "%6s" % station.wmoind
+
+    # for membership_degree in clusterizer.membership_degrees[ :10 ]:
+    # for ind in xrange( 10 ):
 if __name__ == '__main__':
-    main()
+    # main()
+
+    results = clusterize_stations( [ st_info.wmoind for st_info in stations.STATIONS_INFORMATION ], '01' )

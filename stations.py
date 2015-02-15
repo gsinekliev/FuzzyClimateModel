@@ -25,23 +25,23 @@ STATIONS_INFORMATION = [
     StationInformation( "Austria", "Tulln", '11030' ),                   # | 48-19N | 016-07E | 175 m
     StationInformation( "Belarus", "Kostjvkovici", '26887' ),            # | 53-21N | 032-04E | 164 m
     StationInformation( "Belgium", "Charleroi/Gosselies", '06449' ),     # | 50-28N | 004-27E | 187 m
-    StationInformation( "Bosnia and Herzegovina", "Sarajevo", '14654' ), # | 43-52N | 018-26E | 630 m
+    # StationInformation( "Bosnia and Herzegovina", "Sarajevo", '14654' ), # | 43-52N | 018-26E | 630 m -> invalid dew point
     StationInformation( "Bulgaria", "Sofia", '15614' ),                  # | 42-39N | 023-23E | 586 m
     StationInformation( "Croatia", "Zagreb", '14240' ),                  # | 45-49N | 016-02E | 123 m
     StationInformation( "Cyprus", "Nicosia", '17521' ),                  # | 35-08N | 033-31E | 110 m
     StationInformation( "Czech Republic", "Praha-Kbely", '11567' ),      # | 50-07N | 014-32E | 286 m
-    StationInformation( "Denmark", "Aarslev", '06126' ),                 # | 55-19N | 010-26E | 49 m
+    # StationInformation( "Denmark", "Aarslev", '06126' ),                 # | 55-19N | 010-26E | 49 m -> missing h,VV or precipitation
     StationInformation( "Estonia", "Tallinn", '26038' ),                 # | 59-23N | 024-35E | 34 m
     StationInformation( "Finland", "Kilpisjarvi", '02801' ),             # | 69-03N | 020-47E | 478 m
     StationInformation( "France", "Paris", '07150' ),                    # | 48-58N | 002-27E | 66 m
     StationInformation( "Georgia", "Tbilisi", '37545' ),                 # | 41-42N | 044-45E | 403 m
     StationInformation( "Germany", "Berlin-Tegel", '10382' ),            # | 52-34N | 013-19E | 37 m
     StationInformation( "Greece", "Athens ", '16741' ),                  # | 37-56N | 023-56E | 72 m
-    StationInformation( "Hungary", "Szombathely", '12812' ),             # | 47-16N | 016-38E | 220 m
-    StationInformation( "Ireland", "Mullingar", '03971' ),               # | 53-32N | 007-22W | 101 m
+    # StationInformation( "Hungary", "Szombathely", '12812' ),             # | 47-16N | 016-38E | 220 m
+    # StationInformation( "Ireland", "Mullingar", '03971' ),               # | 53-32N | 007-22W | 101 m
     StationInformation( "Italy", "Milano/Malpensa", '16066' ),           # | 45-37N | 008-44E | 234 m
     StationInformation( "Kazakhstan", "Balkasino", '28978' ),            # | 52-32N | 068-45E | 399 m
-    StationInformation( "Latvia", "Dobele", '26424' ),                   # | 56-37N | 023-19E | 44 m
+    # StationInformation( "Latvia", "Dobele", '26424' ),                   # | 56-37N | 023-19E | 44 m -> missing station pressure for 6 o'clock
     StationInformation( "Liechtenstein", "Vaduz", '06990' ),             # | 47-08N | 009-31E | 460 m
     StationInformation( "Lithuania", "Vilnius", '26730' ),               # | 54-38N | 025-06E | 162 m
     StationInformation( "Malta", "Luqa", '16597' ),                      # | 35-51N | 014-29E | 91 m
@@ -59,20 +59,20 @@ STATIONS_INFORMATION = [
     StationInformation( "Sweden", "Kerstinbo", '02482' ),                # | 60-16N | 016-59E | 56 m
     StationInformation( "Switzerland", "Zurich-Kloten", '06670' ),       # | 47-29N | 008-32E | 436 m
     StationInformation( "Turkey", "Ankara", '17128' ),                   # | 40-07N | 032-59E | 953 m
-    StationInformation( "Ukraine", "Mukachevo", '33634' ),               # | 48-26-00N | 022-45-00E | 119 m
+    # StationInformation( "Ukraine", "Mukachevo", '33634' ),               # | 48-26-00N | 022-45-00E | 119 m -> missing info
     StationInformation( "United Kingdom", "Lerwick", '03005' ),          # | 60-08N | 001-11W | 82 m
 
     # ASIA
-    StationInformation( "Armenia", "Kapan ", '37959' ),                  # | 39-12N | 046-26E | 704 m
+    StationInformation( "Armenia", "Kapan", '37959' ),                  # | 39-12N | 046-26E | 704 m
     StationInformation( "Azerbaijan", "Lankaran", '37985' ),             # | 38-44N | 048-50E | -13 m
-    StationInformation( "Brunei", "Brunei Airport", '96315' ),           # | 04-56N | 114-56E | 22 m
-    StationInformation( "China", "Hulin ", '50983' ),                    # | 45-46N | 132-58E | 103 m
+    # StationInformation( "Brunei", "Brunei Airport", '96315' ),           # | 04-56N | 114-56E | 22 m
+    StationInformation( "China", "Hulin", '50983' ),                    # | 45-46N | 132-58E | 103 m
     StationInformation( "Cyprus", "Nicosia", '17521' ),                  # | 35-08N | 033-31E | 110 m
     StationInformation( "Georgia", "Tbilisi", '37545' ),                 # | 41-42N | 044-45E | 403 m
     StationInformation( "Hong Kong", "Hong Kong Airport", '45007' ),     # | 22-20N | 114-11E | 5 m
     StationInformation( "Iran", "Tehran-Mehrabad", '40754' ),            # | 35-41N | 051-21E | 1204 m
-    StationInformation( "Iraq", "Baghdad", '40650' ),                    # | 33-14N | 044-14E | 34 m
-    StationInformation( "Lebanon", "Beyrouth Aeroport ", '40100' ),      # | 33-49N | 035-29E | 29 m
+    # StationInformation( "Iraq", "Baghdad", '40650' ),                    # | 33-14N | 044-14E | 34 m
+    StationInformation( "Lebanon", "Beyrouth Aeroport", '40100' ),      # | 33-49N | 035-29E | 29 m
     StationInformation( "Malaysia", "Kota Bharu", '48615' ),             # | 06-10N | 102-17E | 5 m
 
     #verified:

@@ -1,6 +1,7 @@
 from collections import namedtuple
 from datetime import datetime, time, date
-
+from numpy import array
+from math import sqrt
 
 Attribute = namedtuple( 'Attribute', [ 'name', 'value', 'weight' ] )
 
@@ -66,6 +67,14 @@ class Synop( object ):
         return [ 'date_of_measurement', 'time_of_measurement', 'wmo_index', 'cloud_base_of_lowest_cloud_seen',
                  'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
 
+    def normalized_vector( self ):
+        unnormalized_vector = [ getattr( self, attribute ).value for attribute in self.attributes() ]
+        denom = sqrt( sum( map( lambda x: x * x, unnormalized_vector ) ) )
+        return array( [ item / denom for item in unnormalized_vector ] )
+
+    def attributes( self ):
+        return [ 'cloud_base_of_lowest_cloud_seen', 'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
+
     @staticmethod
     def aggregate( synops, full_list_synops ):
         """ 
@@ -101,7 +110,6 @@ class Synop( object ):
         result_synop.station_pressure                = Attribute( 'Station Pressure',
                                                                   sum( s.station_pressure.value for s in filt_synops_by_station_pressure ) / len( filt_synops_by_station_pressure ),
                                                                   sum( s.station_pressure.weight for s in filt_synops_by_station_pressure ) / len( filt_synops_by_station_pressure ) )
-
 
         filt_synops_by_precipitation = [ s for s in full_list_synops or synops if s.precipitation.weight != 0.0 ]
         result_synop.precipitation                   = Attribute( 'Precipitation',
@@ -204,11 +212,18 @@ class SynopParser( object ):
                                wmo_index=int( splitted_data[ 0 ] ) )
         observation   = splitted_data[ 6 ].split( ' ' )
 
+        print splitted_data[ 0 ]
+        if observation[ 3 ].startswith( "NIL" ) or observation[ 3 ].startswith( "AAXX" ):
+            return result_synop
+
         result_synop.cloud_base_of_lowest_cloud_seen = Attribute( 'Cloud base of lowest cloud seen', *cls.get_normalized_cloud_base_of_lowest_cloud_seen( observation[ 3 ] ) )
         result_synop.visibility                      = Attribute( 'Visibility', *cls.get_normalized_visibility( observation[ 4 ] ) )
         for ind, element in enumerate( observation[ 5: ] ):
-            if element.startswith( '222' ) or element in [ '333', '444', '555' ]:
+            if element.startswith( '222' ) or element.startswith( '333' ) or element.startswith( 'AAXX' ) or element in [ '333', '444', '555' ]:
                 break
+
+            if '=' in element:
+                element = element.split( '=' )[0]
 
             if element.startswith( '1' ):
                 result_synop.temperature = Attribute( 'Temperature', *cls.get_normalized_temperature( element ) )
@@ -285,7 +300,7 @@ class SynopParser( object ):
             '7': 1750.0, # "1500 to 2000 m" ),
             '8': 2250.0, # "2000 to 2500 m" ),
             '9': 2750.0, # "above 2500 m" ),
-            # '/': None, # "unknown " ),
+            # '/': None, # "unknown" ),
         }
 
         # if key error "Invalid cloud base of lowest cloud seen."
@@ -332,10 +347,10 @@ class SynopParser( object ):
         if cls.VISIBILITY.has_key( vv ):
             return cls.VISIBILITY[ vv ], ATTRIBUTE_WEIGHT
 
-        if vv == '//':
-            return None, 0.0 # missing
+        # if vv == '//':
+        return None, 0.0 # missing
 
-        raise KeyError( "Invalid visibility" )
+        # raise KeyError( "Invalid visibility" )
 
     @classmethod
     def get_total_cloud_cover( cls, Nddff ):
@@ -382,6 +397,9 @@ class SynopParser( object ):
     def get_temperature( cls, osTTT ):
         """ TTT from 1sTTT -> s -- sign of temperature (0=positive, 1=negative)
                               TTT -- Temperature in .1 C """
+        if '/' in osTTT:
+            return None, 0.0
+
         return ( 0.1 if osTTT[ 1 ] == '0' else -0.1 ) * float( osTTT[ 2: ] ), 1.0
 
     @classmethod
@@ -398,10 +416,13 @@ class SynopParser( object ):
         """ TTT from 2sTTT -> s -- sign of temperature (0=positive, 1=negative, 9 = RH)
                               TTT -- Dewpoint temperature in .1 C (if sign is 9, TTT is relative humidity) """
         ATTRIBUTE_WEIGHT = 1.0
+        if '/' in tsTTT:
+            return None, 0.0
+
         if tsTTT[ 1 ] == '9':
             return float( tsTTT[ 2: ] ), 0.0 # relative humidity
 
-        return 0.1 * float( tsTTT[ 2: ] ), 1.0 # dewpoint temperature
+        return ( 0.1 if tsTTT[ 1 ] == '0' else -0.1 ) * float( tsTTT[ 2: ] ), 1.0 # dewpoint temperature
 
     @classmethod
     def get_normalized_station_pressure( cls, tPPPP ):
@@ -415,8 +436,14 @@ class SynopParser( object ):
     def get_station_pressure( cls, tPPPP ):
         """ PPPP from 3PPPP -> 3PPPP -- Station pressure in 0.1 mb (thousandths digit omitted, last digit can be slash, then pressure in full mb) """
         ATTRIBUTE_WEIGHT = 1.0
+        if '/' in tPPPP[ 2:4 ]:
+            return None, 0.0
+
         if tPPPP[ 4 ] == '/':
             return float( tPPPP[ 1:4 ] ), ATTRIBUTE_WEIGHT
+
+        if tPPPP[ 1 ] == '/':
+            return float( tPPPP[ 2:5 ] ), ATTRIBUTE_WEIGHT
 
         return float( tPPPP[ 1: ] ) * 0.1, ATTRIBUTE_WEIGHT
 

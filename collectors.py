@@ -24,7 +24,7 @@ MONTH_NAMES   = {
     '09': 'September',
     '10': 'October',
     '11': 'November',
-    '12': 'December ',
+    '12': 'December',
 }
 
 
@@ -65,9 +65,9 @@ def get_synop( station, month, year=2015, synop_hour=SYNOP_HOUR ):
     full_list = []
     with open( filename, "r+" ) as f:
         for line in f.readlines():
+            full_list.append( SynopParser.parse( line ) )
             if regex.match( line ):
                 synops.append( SynopParser.parse( line ) )
-                full_list.append( SynopParser.parse( line ) )
 
     return Synop.aggregate( synops, full_list )
 
@@ -130,4 +130,4 @@ if __name__ == '__main__':
     #     if isinstance( v, Attribute ):
     #         print 'Real value:', getattr( Normalizer, 'get_' + k , lambda *args, **kwargs: "BANICA S BOZA" )( v.value )
 
-    # print get_synops( [ '15549', '15614' ], '01' )
+    print get_synops( [ '15549', '15614' ], '01' )
