@@ -68,7 +68,7 @@ class Synop( object ):
                  'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
 
     def real_vector( self ):
-        return Normalizer.get_unnormalized_vector( self.vector() )
+        return Normalizer.get_unnormed_vector( self.vector() )
 
     def normalized_vector( self ):
         unnormalized_vector = self.vector()
@@ -148,7 +148,7 @@ class Normalizer( object ):
       used to denorm attributes( returns the original values )
     '''
     @staticmethod
-    def get_unnormalized_vector( vector ):
+    def get_unnormed_vector( vector ):
         attributes = [ 'cloud_base_of_lowest_cloud_seen', 'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
         return [ getattr( Normalizer, 'get_' + attributes[ ind ] )( item ) for ind, item in enumerate( vector ) ]        
 
