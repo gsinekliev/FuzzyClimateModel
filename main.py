@@ -12,11 +12,9 @@ from synop_parser import Normalizer
 from visualization.visualize_clusters import ClusterVisualizer
 import stations
 
-
 NUM_CLUSTERS      = 5
 RANDOM_INTS_RANGE = 1000
 WRITE_INFO        = False
-
 
 def generate_random_membership_vector(num_clusters):
     rand_ints     = [random.randint(1, RANDOM_INTS_RANGE) for _ in xrange(num_clusters)]
@@ -111,7 +109,7 @@ def main(month='01', year=2015):
     # cluster number (zerobased)  fields of dictionary.
     indexed_clusters = indexize_cluster(ordered_synop_vectors, clusterizer.membership_degrees)
     if WRITE_INFO:
-        filename = 'exec_results\\Data devided by Clusters.txt'
+        filename = 'exec_results\\Data divided by Clusters.txt'
         check_and_create_file_dir(filename)
         with open(filename, "w+") as f:
             separator = "\n----------------------------------\n"
@@ -135,15 +133,21 @@ def main(month='01', year=2015):
         filename = 'exec_results\\Testing Composition Rule with Training Data.txt'
         check_and_create_file_dir(filename)
         with open(filename, "w+") as f:
-            test_set = chain.from_iterable(zip(indexed_cluster['data'],indexed_cluster['membership_degrees']) for indexed_cluster in indexed_clusters.values())
-            for ind, item in enumerate( test_set ):
+            test_set = chain.from_iterable(zip(indexed_cluster['data'],indexed_cluster['membership_degrees'])
+                                           for indexed_cluster in indexed_clusters.values())
+            for ind, item in enumerate(test_set):
                 f.write('=======================TEST %s=======================\n' % ind)
-                f.write(' '.join(map(str, composer.conclusion_vector(item[0]))))
+                f.write(' '.join(map(str, get_normed_rule_membership_vector(composer.conclusion_vector(item[0])))))
                 f.write('\n')
                 f.write(' '.join(map(str, item[1])))
                 f.write('\n\n')
 
     ClusterVisualizer.visualize_clusters(ordered_synop_objects, clusterizer.membership_degrees)
+
+def get_normed_rule_membership_vector(vector):
+    summed = sum(vector)
+    result = [i/summed for i in vector]
+    return result
 
 if __name__ == '__main__':
     WRITE_INFO   = True
