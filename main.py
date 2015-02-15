@@ -152,13 +152,13 @@ def get_index_of_max_item( vector ):
     return max_ind
 
 
-def indexize_cluster( clusterizer, ordered_synop_vectors ):
-    indexed_clusters = defaultdict( lambda: defaultdict( list, [] ) )
-    for ind in xrange( len( clusterizer.membership_degrees ) ):
-        cluster_index = get_index_of_max_item( clusterizer.membership_degrees[ ind ] )
-        indexed_clusters[ cluster_index ][ 'raw_data' ].append( ordered_synop_vectors[ ind ] )
-        indexed_clusters[ cluster_index ][ 'data' ].append( Normalizer.get_unnormalized_vector( ordered_synop_vectors[ ind ] ) )
-        indexed_clusters[ cluster_index ][ 'membership_degrees' ].append( clusterizer.membership_degrees[ ind ] )
+def indexize_cluster(clusterizer, ordered_synop_vectors):
+    indexed_clusters = defaultdict(lambda: defaultdict(list, []))
+    for ind in xrange(len(clusterizer.membership_degrees)):
+        cluster_index = get_index_of_max_item( clusterizer.membership_degrees[ind])
+        indexed_clusters[cluster_index]['raw_data'].append(ordered_synop_vectors[ind])
+        indexed_clusters[cluster_index]['data'].append(Normalizer.get_unnormalized_vector(ordered_synop_vectors[ind]))
+        indexed_clusters[cluster_index]['membership_degrees'].append(clusterizer.membership_degrees[ind])
 
     return indexed_clusters
 
@@ -170,35 +170,43 @@ if __name__ == '__main__':
     synops = get_synops(station_indices, month)
     print '___________GETTING_SYNOP_RESULTS___________'
     print synops
-    ordered_synops                   = [ synops[ station_index ] for station_index in station_indices ]
-    ordered_synop_vectors            = [ synop.vector() for synop in ordered_synops ]
+    ordered_synops                   = [synops[ station_index ] for station_index in station_indices]
+    ordered_synop_vectors            = [synop.vector() for synop in ordered_synops]
     print '______ORDERED_NORMALIZED_VECTORS___________'
     print '\n'.join( map( str, ordered_synop_vectors ) )
     ordered_synop_normalized_vectors = [ synop.normalized_vector() for synop in ordered_synops ]
-    clusterizer = clusterize_stations( ordered_synop_normalized_vectors, month )
-    indexed_clusters = indexize_cluster( clusterizer, ordered_synop_vectors )
-    for cluster_index, indexed_cluster in indexed_clusters.items():
-        print "_________________________Cluster " + str( cluster_index )
-        print '\n'.join( map( str, indexed_cluster[ 'data' ] ) )
-        # print "----------------------------------"
-        # print '\n'.join( map( str, indexed_cluster[ 'raw_data' ] ) )
-        print "----------------------------------"
-        print '\n'.join( map( str, indexed_cluster[ 'membership_degrees' ] ) )
+    clusterizer = clusterize_stations(ordered_synop_normalized_vectors, month)
+    indexed_clusters = indexize_cluster(clusterizer, ordered_synop_vectors)
+
+    clusters_count = len(clusterizer.membership_degrees[0])
+
+
+    # for cluster_index, indexed_cluster in indexed_clusters.items():
+    #     print "_________________________Cluster " + str(cluster_index)
+    #     print '\n'.join( map( str, indexed_cluster[ 'data' ] ) )
+    #     # print "----------------------------------"
+    #     # print '\n'.join( map( str, indexed_cluster[ 'raw_data' ] ) )
+    #     print "----------------------------------"
+    #     print '\n'.join( map( str, indexed_cluster[ 'membership_degrees' ] ) )
 
     composer = CompositionRule()
-    for cluster_index, indexed_cluster in indexed_clusters.items():
-        composer.add_cluster_rule( RuleGenerator.generate_rule( indexed_cluster[ 'data' ], indexed_cluster[ 'membership_degrees' ] , cluster_index ) )
+    denormed_vectors = [ Normalizer.get_unnormalized_vector(ordered_synop_vector)
+                             for ordered_synop_vector in ordered_synop_vectors ]
+    for cluster_index in xrange(clusters_count):
+        composer.add_cluster_rule(RuleGenerator.generate_rule(denormed_vectors,
+                                                              clusterizer.membership_degrees,
+                                                              cluster_index))
 
     print "__________________COMPOSE_RULES__________________"
     test_set = []
     for indexed_cluster in indexed_clusters.values():
-        for ind in xrange( len( indexed_cluster[ 'data' ] ) ):
-            test_set.append( ( indexed_cluster[ 'data' ][ ind ], indexed_cluster[ 'membership_degrees' ][ ind ] ) )
+        for ind in xrange(len(indexed_cluster['data'])):
+            test_set.append((indexed_cluster['data'][ind], indexed_cluster['membership_degrees'][ind]))
 
     print test_set
     for ind, item in enumerate( test_set ):
         print '=======================TEST %s=======================' % ind
-        print composer.conclusion_vector( item[ 0 ] )
-        print item[ 1 ]
+        print composer.conclusion_vector(item[0])
+        print item[1]
 
-    ClusterVisualizer.visualize_clusters(ordered_synops, clusterizer.membership_degrees)
+    #ClusterVisualizer.visualize_clusters(ordered_synops, clusterizer.membership_degrees)

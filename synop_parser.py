@@ -143,8 +143,10 @@ MAX_DEW_POINT = 40.0
 MAX_STATION_PRESSURE = 1000.0
 MAX_PRECIPITATION = 1000.0
 
-
 class Normalizer( object ):
+    '''
+      used to denorm attributes( returns the original values )
+    '''
     @staticmethod
     def get_unnormalized_vector( vector ):
         attributes = [ 'cloud_base_of_lowest_cloud_seen', 'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
