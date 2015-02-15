@@ -75,6 +75,9 @@ class Synop( object ):
     def attributes( self ):
         return [ 'cloud_base_of_lowest_cloud_seen', 'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
 
+    def attributes_dict(self):
+        return {attribute: getattr( self, attribute ).value for attribute in self.attributes()}
+
     @staticmethod
     def aggregate( synops, full_list_synops ):
         """ 
