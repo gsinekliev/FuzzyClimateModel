@@ -14,23 +14,38 @@ class FuzzyTriangle(object):
     of each element
     '''
     @classmethod
-    def from_cluster_data(cls, values, membership_vector, threshold = 0. ):
-        average = sum([ value*membership for value, membership in zip(values,membership_vector) ]) \
-                  / sum( membership_vector )
+    def from_cluster_data(cls, values, membership_vector, threshold=0.):
+        list = [(value, membership) for value, membership in zip(values, membership_vector) if membership > threshold]
 
-        filteredValues = [value for value, membership in zip(values,membership_vector) if membership > threshold]
-        minValue = min( filteredValues )
-        maxValue = max( filteredValues )
+        value_list = map(lambda x: x[0], list)
+        membership_list = map(lambda x : x[1], list)
 
-        return cls( minValue, average, maxValue )
+        min_value = min(value_list)
+        max_value = max(value_list)
+        average = sum([ value*membership for value, membership in zip(value_list, membership_list)]) \
+                  		/ sum(membership_list)
+
+        delta =(max_value - min_value)/100.0
+
+        instance = cls(min_value - delta, average, max_value + delta)
+        return instance
+
+    def __repr__(self):
+        print 'Triangle'
+        print 'left: ' + str(self._left)
+        print 'middle:' + str(self._top)
+        print 'right:' + str(self._right)
 
     def get_membership_degree(self, value):
+        result = 0
         if value <= self._left or value >= self._right:
-            return 0
+            result = 0
         elif value <= self._top:
-            return ( value - self._left ) / ( self._top - self._left )
+            result = (value - self._left) / (self._top - self._left)
         else:
-            return ( self._right - value ) / ( self._right - self._top )
+            result = (self._right - value) / (self._right - self._top)
+            
+        return result
 
 
 

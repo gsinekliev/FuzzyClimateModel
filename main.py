@@ -18,7 +18,6 @@ RANDOM_INTS_RANGE  = 1000
 SEPARATOR          = "\n----------------------------------\n"
 WRITE_INFO         = True
 
-import time
 def generate_random_membership_vector(num_clusters):
     rand_ints     = [random.randint(1, RANDOM_INTS_RANGE) for _ in xrange(num_clusters)]
     sum_rand_ints = sum(rand_ints)
@@ -30,9 +29,6 @@ def generate_random_membership_vectors(size, num_clusters):
 def clusterize_stations(training_data, num_clusters=NUM_CLUSTERS, write_info=WRITE_INFO):
     header = "Cluster 1 | Cluster 2 | Cluster 3 | Cluster 4 | Cluster 5\n"
 
-    membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
-    membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
-    membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
     membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
     if write_info:
         filename = 'exec_results\\Starting Membership Degrees.txt'
@@ -129,13 +125,13 @@ def main(month='01', year=2015):
     clusterizer = clusterize_stations(ordered_synop_normalized_vectors)
 
     # analyzing clusters
-    # analyzing_clusters_with_indices(ordered_synop_normalized_vectors)
+    analyzing_clusters_with_indices(ordered_synop_normalized_vectors)
 
     # using indexize_cluster to separate clusters data to into
     # cluster number (zerobased)  fields of dictionary.
     indexed_clusters = indexize_cluster(ordered_synop_vectors, clusterizer.membership_degrees)
     if WRITE_INFO:
-        filename = 'exec_results\\Data devided by Clusters.txt'
+        filename = 'exec_results\\Data divided by Clusters.txt'
         check_and_create_file_dir(filename)
         with open(filename, "w+") as f:
             for cluster_index, indexed_cluster in indexed_clusters.items():
@@ -145,25 +141,34 @@ def main(month='01', year=2015):
                 f.write('\n'.join(map(str, indexed_cluster['membership_degrees'])))
                 f.write(SEPARATOR + '\n\n')
 
-    # creating composition rule object containing rule for each cluster
+    clusters_count = len(clusterizer.centers)
     composer = CompositionRule()
-    for cluster_index, indexed_cluster in indexed_clusters.items():
-        composer.add_cluster_rule(RuleGenerator.generate_rule(indexed_cluster['data'], indexed_cluster['membership_degrees'], cluster_index))
-
+    denormed_vectors = [ Normalizer.get_unnormed_vector(ordered_synop_vector)
+                             for ordered_synop_vector in ordered_synop_vectors ]
+    for cluster_index in xrange(clusters_count):
+        composer.add_cluster_rule(RuleGenerator.generate_rule(denormed_vectors,
+                                                              clusterizer.membership_degrees,
+                                                              cluster_index))
+                                                              
     if WRITE_INFO:
         filename = 'exec_results\\Testing Composition Rule with Training Data.txt'
         check_and_create_file_dir(filename)
         with open(filename, "w+") as f:
-            test_set = chain.from_iterable(zip(indexed_cluster['data'],indexed_cluster['membership_degrees']) for indexed_cluster in indexed_clusters.values())
-            for ind, item in enumerate( test_set ):
+            test_set = chain.from_iterable(zip(indexed_cluster['data'],indexed_cluster['membership_degrees'])
+                                           for indexed_cluster in indexed_clusters.values())
+            for ind, item in enumerate(test_set):
                 f.write('=======================TEST %s=======================\n' % ind)
-                f.write(' '.join(map(str, composer.conclusion_vector(item[0]))))
+                f.write(' '.join(map(str, get_normed_rule_membership_vector(composer.conclusion_vector(item[0])))))
                 f.write('\n')
                 f.write(' '.join(map(str, item[1])))
                 f.write('\n\n')
 
     ClusterVisualizer.visualize_clusters(ordered_synop_objects, clusterizer.membership_degrees)
 
+def get_normed_rule_membership_vector(vector):
+    summed = sum(vector)
+    result = [i/summed for i in vector]
+    return result
 
 if __name__ == '__main__':
     main()
