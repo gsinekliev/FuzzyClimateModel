@@ -26,7 +26,7 @@ class ClusterVisualizer(object):
         for city_index, cluster_index in cities_dict.iteritems():
             clusters_dict[cluster_index].append(city_index)
 
-        col_gen = cycle('bgrcmk')
+        col_gen = cycle('bgrcmky')
 
         for cluster_index, cities_list in clusters_dict.iteritems():
             matplotlib.pyplot.scatter([getattr(synop_objects[i], 'temperature').value for i in cities_list],

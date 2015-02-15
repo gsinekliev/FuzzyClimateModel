@@ -1,7 +1,8 @@
 from collections import namedtuple
 from datetime import datetime, time, date
-from numpy import array
 from math import sqrt
+from numpy import array
+
 
 Attribute = namedtuple( 'Attribute', [ 'name', 'value', 'weight' ] )
 

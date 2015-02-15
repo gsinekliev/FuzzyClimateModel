@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import datetime
 from itertools import chain
 import os
 import random
@@ -13,7 +14,7 @@ from visualization.visualize_clusters import ClusterVisualizer
 import stations
 
 
-NUM_CLUSTERS       = 5
+NUM_CLUSTERS       = 7
 RANDOM_INTS_RANGE  = 1000
 SEPARATOR          = "\n----------------------------------\n"
 WRITE_INFO         = True
@@ -24,10 +25,11 @@ def generate_random_membership_vector(num_clusters):
     return [1. * rand_int / sum_rand_ints for rand_int in rand_ints]
 
 def generate_random_membership_vectors(size, num_clusters):
+    random.seed((datetime.now() - datetime(1900,1,1)).total_seconds())
     return [generate_random_membership_vector(num_clusters) for _ in xrange(size)]
 
 def clusterize_stations(training_data, num_clusters=NUM_CLUSTERS, write_info=WRITE_INFO):
-    header = "Cluster 1 | Cluster 2 | Cluster 3 | Cluster 4 | Cluster 5\n"
+    header = " | ".join("Cluster %s" % i for i in range(1, num_clusters + 1)) + "\n"
 
     membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
     if write_info:
@@ -104,6 +106,10 @@ def check_and_create_file_dir(filename):
         if not os.path.exists(filedir):
             os.makedirs(filedir)
 
+def get_normed_rule_membership_vector(vector):
+    vector_sum = sum(vector)
+    return map(lambda x: x / vector_sum, vector)
+
 def main(month='01', year=2015):
     """ Main entrance to the program, arguments are used to
         declare month and year of observations.
@@ -164,11 +170,6 @@ def main(month='01', year=2015):
                 f.write('\n\n')
 
     ClusterVisualizer.visualize_clusters(ordered_synop_objects, clusterizer.membership_degrees)
-
-def get_normed_rule_membership_vector(vector):
-    summed = sum(vector)
-    result = [i/summed for i in vector]
-    return result
 
 if __name__ == '__main__':
     main()

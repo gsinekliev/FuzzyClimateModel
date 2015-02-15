@@ -130,4 +130,4 @@ if __name__ == '__main__':
     #     if isinstance( v, Attribute ):
     #         print 'Real value:', getattr( Normalizer, 'get_' + k , lambda *args, **kwargs: "BANICA S BOZA" )( v.value )
 
-    print get_synops( [ '15549', '15614' ], '01' )
+    # print get_synops( [ '15549', '15614' ], '01' )

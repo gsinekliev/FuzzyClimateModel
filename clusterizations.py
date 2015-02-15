@@ -1,41 +1,47 @@
 from numpy import dot, array, sum as numpy_sum, zeros, outer, reshape
 
 
-class FuzzyCMeans( object ):
-    def __init__( self, training_set, initial_conditions, fuzzyness_coefficient=4. ):
-        """
-            training_set
-                Containing vector data of entries to be clusterized
+class FuzzyCMeans(object):
+    def __init__(self, training_set, initial_conditions, fuzzyness_coefficient=2.):
+        """ training_set
+                Containing vector data of entries to be clusterized.
+            initial_conditions
+                Randomly generated initial membership degrees to all clusters
+                for each item item in the training_set.
+            fuzzyness_coefficient
+                Used for reducing the number of iterations of FuzzyCMeans, this
+                happens, because of powering membership_degrees matrix with it.
         """
         self.fuzzyness_coefficient = fuzzyness_coefficient
-        self.__training_set        = array( training_set )
-        self.__membership_degrees  = array( initial_conditions )
+        self.__training_set        = array(training_set)
+        self.__membership_degrees  = array(initial_conditions)
         self.__centers             = self.compute_centers()
         self.__iterations          = 0
 
-    def __get_membership_degrees( self ):
+    def __get_membership_degrees(self):
         return self.__membership_degrees
-    membership_degrees = property( __get_membership_degrees, None )
+    membership_degrees = property(__get_membership_degrees, None)
+    """ Returns matrix of membership degrees for each item in training_set.
+    """
 
     def __get_training_set(self):
         return self.__training_set
-    x = property( __get_training_set, None )
-    training_set = property( __get_training_set, None )
+    training_set = property(__get_training_set, None)
+    """ Contains the initial vectors, on which is trained FuzzyCMeans.
+    """
 
-    def __get_centers( self ):
+    def __get_centers(self):
         return self.__centers
-    def __set_centers( self, centers ):
-        self.__centers = array( reshape( centers, self.__centers.shape ) )
-    centers = property( __get_centers, __set_centers )
-    """
-        Numpy array containing
+    def __set_centers(self, centers):
+        self.__centers = array(reshape(centers, self.__centers.shape))
+    centers = property(__get_centers, __set_centers)
+    """ Numpy array containingthe centers of the centroids.
     """
 
-    def __get_iterations( self ):
+    def __get_iterations(self):
         return self.__iterations
-    iterations = property( __get_iterations, None )
-    """
-        Integer containing how many iterations costed the clusterization.
+    iterations = property(__get_iterations, None)
+    """ Integer containing how many iterations were needed for clusterization.
     """
 
     def compute_centers(self):
@@ -59,24 +65,21 @@ class FuzzyCMeans( object ):
         return self.__membership_degrees
 
     def step(self):
+        """ Method called on each iteration and returns
+            error for this iteration, using old_membership_degrees
+            and newly computed self.__membership_degrees.
+        """
         old_membership_degrees = self.__membership_degrees
         self.membership()
         self.compute_centers()
-        # return numpy_sum( self.__membership_degrees - old_membership_degrees ) ** 2.
-        result = 0
-        for ind1 in xrange(len(self.__membership_degrees)):
-            for ind2 in xrange(len(self.__membership_degrees[0])):
-                result += (self.__membership_degrees[ind1][ind2] - old_membership_degrees[ind1][ind2]) ** 2.
-        
-        return result
+        return sum((self.__membership_degrees[i1][i2] - old_membership_degrees[i1][i2]) ** 2\
+                        for i1 in xrange(len(self.__membership_degrees)) for i2 in xrange(len(self.__centers)))
 
-    def __call__(self, max_error=1.e-17, max_iterations=1000):
+    def __call__(self, max_error=1.e-10, max_iterations=100):
         error = 1.
         self.__iterations = 0
         while error > max_error and self.__iterations < max_iterations:
             error             = self.step()
-            print error
             self.__iterations = self.__iterations + 1
-        
-        print self.__iterations
+
         return self.centers
