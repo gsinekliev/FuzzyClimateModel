@@ -28,7 +28,7 @@ MONTH_NAMES   = {
 }
 
 
-def get_synops( stations, month, year=2015 ):
+def get_synops(stations, month, year=2015):
     filename = FILE_NAME.format( year=year, month=month )
     if not os.access( filename, os.R_OK ):
         filedir  = os.path.dirname( filename )
