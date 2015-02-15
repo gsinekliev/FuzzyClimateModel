@@ -5,7 +5,7 @@ from math import sqrt
 from utils import euclidean_distance
 
 
-class DavisBouldin(object):
+class DaviesBouldin(object):
     """ Clusters should be list of clusters (arrays of vectors)
         Davis-Bouldin index works with strict clustering (Crisp Sets),
         so each element should be in one cluster

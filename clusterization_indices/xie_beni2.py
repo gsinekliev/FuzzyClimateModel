@@ -12,7 +12,7 @@ class XieBenniIndex( object ):
 
         NOTE: fuzzynes_parameter (weighting exponent) should be the same as is in fuzzy c-means
     """
-    def __init__(self, fuzzyness_parameter=2, xie_beni_constant=1):
+    def __init__(self, fuzzyness_parameter=4., xie_beni_constant=1):
         self._m = fuzzyness_parameter
         self._c = xie_beni_constant
 

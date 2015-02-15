@@ -2,7 +2,7 @@ from numpy import dot, array, sum as numpy_sum, zeros, outer, reshape
 
 
 class FuzzyCMeans( object ):
-    def __init__( self, training_set, initial_conditions, fuzzyness_coefficient=2. ):
+    def __init__( self, training_set, initial_conditions, fuzzyness_coefficient=4. ):
         """
             training_set
                 Containing vector data of entries to be clusterized
@@ -62,13 +62,21 @@ class FuzzyCMeans( object ):
         old_membership_degrees = self.__membership_degrees
         self.membership()
         self.compute_centers()
-        return numpy_sum( self.__membership_degrees - old_membership_degrees ) ** 2.
+        # return numpy_sum( self.__membership_degrees - old_membership_degrees ) ** 2.
+        result = 0
+        for ind1 in xrange(len(self.__membership_degrees)):
+            for ind2 in xrange(len(self.__membership_degrees[0])):
+                result += (self.__membership_degrees[ind1][ind2] - old_membership_degrees[ind1][ind2]) ** 2.
+        
+        return result
 
-    def __call__(self, max_error=9.e-36, max_iterations=1000):
+    def __call__(self, max_error=1.e-17, max_iterations=1000):
         error = 1.
         self.__iterations = 0
         while error > max_error and self.__iterations < max_iterations:
             error             = self.step()
-            # print error
+            print error
             self.__iterations = self.__iterations + 1
+        
+        print self.__iterations
         return self.centers

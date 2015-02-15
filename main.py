@@ -3,7 +3,7 @@ from itertools import chain
 import os
 import random
 
-from clusterization_indices.davies_bouldin import DavisBouldin
+from clusterization_indices.davies_bouldin import DaviesBouldin
 from clusterization_indices.xie_beni2 import XieBenniIndex
 from clusterizations import FuzzyCMeans
 from collectors import get_synops
@@ -13,11 +13,12 @@ from visualization.visualize_clusters import ClusterVisualizer
 import stations
 
 
-NUM_CLUSTERS      = 5
-RANDOM_INTS_RANGE = 1000
-WRITE_INFO        = False
+NUM_CLUSTERS       = 5
+RANDOM_INTS_RANGE  = 1000
+SEPARATOR          = "\n----------------------------------\n"
+WRITE_INFO         = True
 
-
+import time
 def generate_random_membership_vector(num_clusters):
     rand_ints     = [random.randint(1, RANDOM_INTS_RANGE) for _ in xrange(num_clusters)]
     sum_rand_ints = sum(rand_ints)
@@ -26,12 +27,14 @@ def generate_random_membership_vector(num_clusters):
 def generate_random_membership_vectors(size, num_clusters):
     return [generate_random_membership_vector(num_clusters) for _ in xrange(size)]
 
-def clusterize_stations(training_data):
+def clusterize_stations(training_data, num_clusters=NUM_CLUSTERS, write_info=WRITE_INFO):
     header = "Cluster 1 | Cluster 2 | Cluster 3 | Cluster 4 | Cluster 5\n"
 
-    #Q could be moved in function to use stored or newly generated values. 
-    membership_degrees = generate_random_membership_vectors(len(training_data), NUM_CLUSTERS)
-    if WRITE_INFO:
+    membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
+    membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
+    membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
+    membership_degrees = generate_random_membership_vectors(len(training_data), num_clusters)
+    if write_info:
         filename = 'exec_results\\Starting Membership Degrees.txt'
         check_and_create_file_dir(filename)
         with open(filename, "w+") as f:
@@ -41,7 +44,7 @@ def clusterize_stations(training_data):
 
     clusterizer = FuzzyCMeans(training_data, membership_degrees)
     clusterizer()
-    if WRITE_INFO:
+    if write_info:
         filename = 'exec_results\\Cluster Table for Stations.txt'
         check_and_create_file_dir(filename)
         with open(filename, "w+") as f:
@@ -51,6 +54,35 @@ def clusterize_stations(training_data):
                         " -> " + "%25s" % station.country + " " + "%25s" % station.city + " " + "%6s\n" % station.wmoind)
 
     return clusterizer
+
+def analyzing_clusters_with_indices(training_data, min_clusters=3, max_clusters=12):
+    filename = 'exec_results\\Cluster Analysis.txt'
+    check_and_create_file_dir(filename)
+    with open(filename, "w+") as f:
+        f.write('Start of cluster analysis.\nTrying Davies-Bouldin Index with minimum %s and maximum %s clusters:\n' % (min_clusters, max_clusters)) 
+        davies_bouldin = DaviesBouldin()
+        davies_bouldin_results = []
+        for num_clusters in range(min_clusters, max_clusters + 1):
+            clusterizer = clusterize_stations(training_data, num_clusters=num_clusters, write_info=False)
+            davies_bouldin_result = davies_bouldin.calculate_from_fuzzy_data(training_data, clusterizer.membership_degrees, clusterizer.centers)
+            davies_bouldin_results.append([davies_bouldin_result, num_clusters])
+            #TODO add results for the FuzzyCMeans
+            f.write("Clusters %s. Davies-Bouldin Index: %s.\n" % (num_clusters, davies_bouldin_result))
+
+        best_davies_bouldin_result = min(davies_bouldin_results)
+        f.write("Best index result for %s clusters. Value of Davies-Bouldin index %s.\n" % (best_davies_bouldin_result[1], best_davies_bouldin_result[0]))    
+
+        f.write('Start of cluster analysis.\nTrying Xie-Benni Index with minimum %s and maximum %s clusters:\n' % (min_clusters, max_clusters)) 
+        xie_benni = XieBenniIndex()
+        xie_benni_results = []
+        for num_clusters in range(min_clusters, max_clusters + 1):
+            clusterizer = clusterize_stations(training_data, num_clusters=num_clusters, write_info=False)
+            xie_benni_result = xie_benni.calculate(training_data, clusterizer.membership_degrees, clusterizer.centers)
+            xie_benni_results.append([xie_benni_result, num_clusters])
+            f.write("Clusters %s. Xie-Benni Index: %s.\n" % (num_clusters, xie_benni_result))
+
+        best_xie_benni_result = min(xie_benni_results)
+        f.write("Best index result for %s clusters. Value of Xie-Benni index %s.\n" % (best_xie_benni_result[1], best_xie_benni_result[0]))    
 
 def get_cluster_index_from_membership_degrees(vector):
     max_ind, max_value = 0, 0
@@ -97,15 +129,7 @@ def main(month='01', year=2015):
     clusterizer = clusterize_stations(ordered_synop_normalized_vectors)
 
     # analyzing clusters
-    if WRITE_INFO:
-        print 'Analyzing clusters:'
-        davis_bouldin = DavisBouldin()
-        print "Bouldin index " + str(davis_bouldin.calculate_from_fuzzy_data(ordered_synop_normalized_vectors,
-                                                        clusterizer.membership_degrees, clusterizer.centers))
-
-        xie_beni = XieBenniIndex()
-        print "Xie Beni index " + str(xie_beni.calculate(ordered_synop_normalized_vectors,
-                                    clusterizer.membership_degrees, clusterizer.centers))
+    # analyzing_clusters_with_indices(ordered_synop_normalized_vectors)
 
     # using indexize_cluster to separate clusters data to into
     # cluster number (zerobased)  fields of dictionary.
@@ -114,13 +138,12 @@ def main(month='01', year=2015):
         filename = 'exec_results\\Data devided by Clusters.txt'
         check_and_create_file_dir(filename)
         with open(filename, "w+") as f:
-            separator = "\n----------------------------------\n"
             for cluster_index, indexed_cluster in indexed_clusters.items():
                 f.write("____________Cluster %s____________\n" % cluster_index)
                 f.write('\n'.join(map(str, indexed_cluster['data'])))
-                f.write(separator)
+                f.write(SEPARATOR)
                 f.write('\n'.join(map(str, indexed_cluster['membership_degrees'])))
-                f.write(separator + '\n\n')
+                f.write(SEPARATOR + '\n\n')
 
     # creating composition rule object containing rule for each cluster
     composer = CompositionRule()
@@ -143,6 +166,4 @@ def main(month='01', year=2015):
 
 
 if __name__ == '__main__':
-    WRITE_INFO   = True
-    # NUM_CLUSTERS = 7
     main()
