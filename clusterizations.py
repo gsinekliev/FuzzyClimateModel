@@ -20,6 +20,7 @@ class FuzzyCMeans( object ):
     def __get_training_set(self):
         return self.__training_set
     x = property( __get_training_set, None )
+    training_set = property( __get_training_set, None )
 
     def __get_centers( self ):
         return self.__centers

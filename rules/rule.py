@@ -32,10 +32,8 @@ class Rule(object):
                                       for ind, antecedent in enumerate( self._if_part ) ] )
 
 class RuleGenerator(object):
-    def __init__(self):
-        pass
-
-    def generate_rule(self, synop_objects, membership_matrix, cluster_index):
+    @staticmethod
+    def generate_rule(synop_objects, membership_matrix, cluster_index):
         """
             for one cluster passing synop_objects, membership_matrix for them and cluster_index
         """

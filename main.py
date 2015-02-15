@@ -5,8 +5,10 @@ import input as inp
 from clusterizations import FuzzyCMeans
 from clusterization_indices.davies_bouldin import DavisBouldin
 from clusterization_indices.xie_beni2 import XieBenniIndex
+from rules.rule import RuleGenerator, CompositionRule
 from collectors import get_synops
 import stations
+from synop_parser import Normalizer
 
 NUM_CLUSTERS      = 5
 RANDOM_INTS_RANGE = 1000
@@ -120,14 +122,12 @@ def main():
     # print named_training_data
 
 
-def clusterize_stations( station_indices, month, year=2015 ):
-    synops              = get_synops( station_indices, month, year )
-    print '___________GETTING_SYNOP_RESULTS___________'
-    print synops
-    training_data       = [ synops[ station_index ].normalized_vector() for station_index in station_indices ]
+def clusterize_stations( ordered_synop_normalized_vectors, month, year=2015 ):
+    training_data       = ordered_synop_normalized_vectors
     print '_______________TRAINING_DATA_______________'
     print training_data
     membership_degrees  = generate_random_membership_vectors( len( training_data ), NUM_CLUSTERS )
+    # membership_degrees  = generate_random_membership_vectors( len( training_data ), NUM_CLUSTERS )
     print '____________MEMBERSHIP_DEGREES_____________'
     print membership_degrees
     clusterizer         = FuzzyCMeans( training_data, membership_degrees )
@@ -136,9 +136,64 @@ def clusterize_stations( station_indices, month, year=2015 ):
     for ind, station in enumerate( stations.STATIONS_INFORMATION ):
         print " " + " | ".join( map( lambda x: "%8.7f" % x, clusterizer.membership_degrees[ ind ] ) ) + " -> " + "%25s" % station.country + " " + "%25s" % station.city + " " + "%6s" % station.wmoind
 
-    # for membership_degree in clusterizer.membership_degrees[ :10 ]:
-    # for ind in xrange( 10 ):
+    return clusterizer
+
+from collections import defaultdict
+
+def get_index_of_max_item( vector ):
+    max_ind, max_value = -1, 0
+    for ind in xrange( len( vector ) ):
+        if vector[ ind ] > max_value:
+            max_value = vector[ ind ]
+            max_ind = ind
+
+    return max_ind
+
+
+def indexize_cluster( clusterizer, ordered_synop_vectors ):
+    indexed_clusters = defaultdict( lambda: defaultdict( list, [] ) )
+    for ind in xrange( len( clusterizer.membership_degrees ) ):
+        cluster_index = get_index_of_max_item( clusterizer.membership_degrees[ ind ] )
+        indexed_clusters[ cluster_index ][ 'raw_data' ].append( ordered_synop_vectors[ ind ] )
+        indexed_clusters[ cluster_index ][ 'data' ].append( Normalizer.get_unnormalized_vector( ordered_synop_vectors[ ind ] ) )
+        indexed_clusters[ cluster_index ][ 'membership_degrees' ].append( clusterizer.membership_degrees[ ind ] )
+
+    return indexed_clusters
+
 if __name__ == '__main__':
     # main()
+    station_indices = [ st_info.wmoind for st_info in stations.STATIONS_INFORMATION ]
+    month  = '01'
+    synops = get_synops( station_indices, month )
+    print '___________GETTING_SYNOP_RESULTS___________'
+    print synops
+    ordered_synops                   = [ synops[ station_index ] for station_index in station_indices ]
+    ordered_synop_vectors            = [ synop.vector() for synop in ordered_synops ]
+    print '______ORDERED_NORMALIZED_VECTORS___________'
+    print '\n'.join( map( str, ordered_synop_vectors ) )
+    ordered_synop_normalized_vectors = [ synop.normalized_vector() for synop in ordered_synops ]
+    clusterizer = clusterize_stations( ordered_synop_normalized_vectors, month )
+    indexed_clusters = indexize_cluster( clusterizer, ordered_synop_vectors )
+    for cluster_index, indexed_cluster in indexed_clusters.items():
+        print "_________________________Cluster " + str( cluster_index )
+        print '\n'.join( map( str, indexed_cluster[ 'data' ] ) )
+        print "----------------------------------"
+        print '\n'.join( map( str, indexed_cluster[ 'raw_data' ] ) )
+        print "----------------------------------"
+        print '\n'.join( map( str, indexed_cluster[ 'membership_degrees' ] ) )
 
-    results = clusterize_stations( [ st_info.wmoind for st_info in stations.STATIONS_INFORMATION ], '01' )
+    # composer = CompositionRule()
+    # [ composer.add_cluster_rule( RuleGenerator.generate_rule( indexed_cluster[ 'data' ], indexed_cluster[ 'membership_degrees' ] , cluster_index ) ) for cluster_index, indexed_cluster in indexed_clusters.items() ]
+
+    # print "__________________COMPOSE_RULES__________________"
+    # test_set = [
+    #     [0.86459184855289717, 0.86459184855289706, -6.8972882242763092, -8.4451865337823087, 819.08921626534755, 46.515041452145894],
+    #     [0.83073482561936263, 0.83073482561936207, -5.1680926987081364, -7.9818719467737296, 806.28710363831283, 4.9844089537161755],
+    #     [1.3027254252650611, 1.3027254252650609, 16.605520897807686, 14.130342589804066, 184.7558816831563, 84.156062472123025],
+    #     [1.2673356682704242, 1.267335668270424, 15.492949551944349, 13.391625250360484, 180.35004195403161, 201.50637125499765],
+    #     [1.0283650843519898, 1.0283650843519898, 21.061664863442253, 11.199311973834263, 19.754561539729377, 85.148628984344839],
+    #     [1.0795398862271515, 1.0795398862271515, 17.906519497224451, 10.0222798614788, 17.506538488316988, 290.82804534959484],
+    # ]
+
+    # for item in test_set:
+    #     print composer.conclusion_vector( item )

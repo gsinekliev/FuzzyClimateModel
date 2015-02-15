@@ -67,10 +67,16 @@ class Synop( object ):
         return [ 'date_of_measurement', 'time_of_measurement', 'wmo_index', 'cloud_base_of_lowest_cloud_seen',
                  'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
 
+    def real_vector( self ):
+        return Normalizer.get_unnormalized_vector( self.vector() )
+
     def normalized_vector( self ):
-        unnormalized_vector = [ getattr( self, attribute ).value for attribute in self.attributes() ]
+        unnormalized_vector = self.vector()
         denom = sqrt( sum( map( lambda x: x * x, unnormalized_vector ) ) )
         return array( [ item / denom for item in unnormalized_vector ] )
+
+    def vector( self ):
+        return [ getattr( self, attribute ).value for attribute in self.attributes() ]
 
     def attributes( self ):
         return [ 'cloud_base_of_lowest_cloud_seen', 'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
@@ -118,7 +124,10 @@ class Synop( object ):
         result_synop.precipitation                   = Attribute( 'Precipitation',
                                                                   sum( s.precipitation.value for s in filt_synops_by_precipitation ),
                                                                   sum( s.precipitation.weight for s in filt_synops_by_precipitation ) / len( filt_synops_by_precipitation ) )
-
+        print "__________________LEWTF____________________________"
+        print result_synop.wmo_index
+        print result_synop.cloud_base_of_lowest_cloud_seen
+        print result_synop.visibility
         return result_synop
 
     def to_JSON( self ):
@@ -135,6 +144,11 @@ MAX_PRECIPITATION = 1000.0
 
 
 class Normalizer( object ):
+    @staticmethod
+    def get_unnormalized_vector( vector ):
+        attributes = [ 'cloud_base_of_lowest_cloud_seen', 'visibility', 'temperature', 'dew_point', 'station_pressure', 'precipitation' ]
+        return [ getattr( Normalizer, 'get_' + attributes[ ind ] )( item ) for ind, item in enumerate( vector ) ]        
+
     @staticmethod
     def get_cloud_base_of_lowest_cloud_seen( norm_cloud_base ):
         return norm_cloud_base * MAX_CLOUD_BASE_OF_LOWEST_CLOUD_SEEN
@@ -215,7 +229,6 @@ class SynopParser( object ):
                                wmo_index=int( splitted_data[ 0 ] ) )
         observation   = splitted_data[ 6 ].split( ' ' )
 
-        print splitted_data[ 0 ]
         if observation[ 3 ].startswith( "NIL" ) or observation[ 3 ].startswith( "AAXX" ):
             return result_synop
 
@@ -286,7 +299,7 @@ class SynopParser( object ):
         if result[ 1 ] == 0.0:
             return result
 
-        return result[ 1 ] / MAX_CLOUD_BASE_OF_LOWEST_CLOUD_SEEN, 1.0
+        return result[ 0 ] / MAX_CLOUD_BASE_OF_LOWEST_CLOUD_SEEN, 1.0
 
     @classmethod
     def get_cloud_base_of_lowest_cloud_seen( cls, iihVV ):
@@ -326,7 +339,7 @@ class SynopParser( object ):
         if result[ 1 ] == 0.0:
             return result
 
-        return result[ 1 ] / MAX_VISIBILITY, result[ 1 ]
+        return result[ 0 ] / MAX_VISIBILITY, result[ 1 ]
 
     @classmethod
     def get_visibility( cls, iihVV ):

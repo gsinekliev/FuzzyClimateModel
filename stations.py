@@ -34,7 +34,6 @@ STATIONS_INFORMATION = [
     StationInformation( "Estonia", "Tallinn", '26038' ),                 # | 59-23N | 024-35E | 34 m
     StationInformation( "Finland", "Kilpisjarvi", '02801' ),             # | 69-03N | 020-47E | 478 m
     StationInformation( "France", "Paris", '07150' ),                    # | 48-58N | 002-27E | 66 m
-    StationInformation( "Georgia", "Tbilisi", '37545' ),                 # | 41-42N | 044-45E | 403 m
     StationInformation( "Germany", "Berlin-Tegel", '10382' ),            # | 52-34N | 013-19E | 37 m
     StationInformation( "Greece", "Athens ", '16741' ),                  # | 37-56N | 023-56E | 72 m
     # StationInformation( "Hungary", "Szombathely", '12812' ),             # | 47-16N | 016-38E | 220 m
@@ -63,16 +62,16 @@ STATIONS_INFORMATION = [
     StationInformation( "United Kingdom", "Lerwick", '03005' ),          # | 60-08N | 001-11W | 82 m
 
     # ASIA
-    StationInformation( "Armenia", "Kapan", '37959' ),                  # | 39-12N | 046-26E | 704 m
+    StationInformation( "Armenia", "Kapan", '37959' ),                   # | 39-12N | 046-26E | 704 m
     StationInformation( "Azerbaijan", "Lankaran", '37985' ),             # | 38-44N | 048-50E | -13 m
-    # StationInformation( "Brunei", "Brunei Airport", '96315' ),           # | 04-56N | 114-56E | 22 m
-    StationInformation( "China", "Hulin", '50983' ),                    # | 45-46N | 132-58E | 103 m
+    # StationInformation( "Brunei", "Brunei Airport", '96315' ),         # | 04-56N | 114-56E | 22 m
+    StationInformation( "China", "Hulin", '50983' ),                     # | 45-46N | 132-58E | 103 m
     StationInformation( "Cyprus", "Nicosia", '17521' ),                  # | 35-08N | 033-31E | 110 m
     StationInformation( "Georgia", "Tbilisi", '37545' ),                 # | 41-42N | 044-45E | 403 m
     StationInformation( "Hong Kong", "Hong Kong Airport", '45007' ),     # | 22-20N | 114-11E | 5 m
     StationInformation( "Iran", "Tehran-Mehrabad", '40754' ),            # | 35-41N | 051-21E | 1204 m
-    # StationInformation( "Iraq", "Baghdad", '40650' ),                    # | 33-14N | 044-14E | 34 m
-    StationInformation( "Lebanon", "Beyrouth Aeroport", '40100' ),      # | 33-49N | 035-29E | 29 m
+    # StationInformation( "Iraq", "Baghdad", '40650' ),                  # | 33-14N | 044-14E | 34 m
+    StationInformation( "Lebanon", "Beyrouth Aeroport", '40100' ),       # | 33-49N | 035-29E | 29 m
     StationInformation( "Malaysia", "Kota Bharu", '48615' ),             # | 06-10N | 102-17E | 5 m
 
     #verified:
