@@ -48,9 +48,9 @@ def get_synops(stations, month, year=2015):
         changes_to_result = { station: get_synop( station, month, year ) for station in [ s for s in stations if s not in cached_stations ] }
         if changes_to_result:
             with open( filename, "w+") as f:
-                cached_result.update( { station: get_synop( station, month, year ) for station in [ s for s in stations if s not in cached_stations ] } )
+                cached_result.update(changes_to_result)
                 json.dump( { station: synop.to_dict() for station, synop in cached_result.items() }, f, indent=4 )
-        
+
         result = cached_result
 
     return result
